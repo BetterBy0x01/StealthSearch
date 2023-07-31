@@ -1,0 +1,22 @@
+-> Convention: Unix Shell variables will have their names in UPPERCASE
+-> Cannot use unset command to variables that are marked readonly.
+-> All the conditional expressions should be inside square braces with spaces around them.
+    Ex. Wrong X [$a==$b],    Right \/ [ $a == $b ]
+-> Logical OR (-o), Logical AND (-a)
+-> Single = (checks if the value of two operands are equal or not)
+   Double == (same but it's specific to bash)
+   -eq (for integer expression only)
+-> [ -z $a ] -> checks if zero
+   [ -n $a ] -> checks if not zero.
+-> " -g " -> checks if file has its set group ID (SGUID) bit set.
+   " -u " -> User ID (SUID) bit set
+   " -s " -> size greater than 0
+   " -e " -> if file exists (even if it's a directory)
+-> Looping from 1-10 but incrementing each time by 2 {1..10..2}
+-> \v : vertical tab
+-> Passing 2 variables to a function Hello()
+    : Hello Ashutosh Patel
+    : Accessing using $1 and $2 inside the function.
+-> ` ` : backticks are used to execute a command in a subshell and capture its output as a string (old way).
+   `$(...)`: new way.
+-> [ vs [[(advance [) : (supports wildcards as well using =~ )
