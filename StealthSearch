@@ -288,11 +288,139 @@ function dictionaryAttack() {
     # Show Information
     if [[ -n "$requestStorage" ]]; then
         str="Directories and files found from: ${cBold}${dictionary}${cNormal}"
-        n=${#initial}
+        n=${#str}
         ((n += 1))
         chr="="
         echo -e "$(printf "%0.s${chr}" $(seq ${n}))"
-        echo -e "${initial}"
+        echo -e "${str}"
+        echo -e "$(printf "%0.s${chr}" $(seq ${n}))"
+        echo "$requestStorage" | sort -u
+
+        # Output file
+        if [[ -n "$outputFile" ]]; then
+            outputFile "$requestStorage" "$outputFile"
+        fi
+    else
+        notFound
+    fi
+}
+
+## StealthSearch Extension Attack
+function extensionAttack() {
+    echo -e "\nTarget: ${cBold}${target}${cNormal}"
+
+    # Checking file exist
+    if [[ -f "$extension" ]]; then
+        # Count lines
+        # The awk command is used for text processing. In this case, 
+        # it's used to extract the first field (the number of lines) from the output of wc
+        totalRequests=$(wc -l "${extension}" | awk '{printf $1}')
+
+        # Calculate
+        calcRequests
+
+        echo -e "Total requests: ${totalRequests}"
+
+        for extension in $(cat "$extension"); do
+            # Send request
+            requestRun
+
+            # Show information
+            if [[ -n "$requestStorage" ]]; then
+                str="Extension: ${cBold}${extension}${cNormal}" 
+                n=${#str}
+                ((n += 1))
+                chr="="
+                echo -e "$(printf "%0.s${chr}" $(seq ${n}))"
+                echo -e "${str}"
+                showConentInFile
+                echo -e "$(printf "%0.s${chr}" $(seq ${n}))"
+                echo "$requestStorage"
+
+                # Output file
+                if [[ -n "$outputFile" ]]; then
+                    outputFile "$requestStorage" "$outputFile"
+                fi
+            else
+                notFound
+            fi
+        done
+
+        # Close Script
+        exit 1
+    
+    # Checking various extensions
+    elif [[ "$extension" =~ "," ]]; then
+        extensionslist=$(echo "$extension" | sed 's/,/ /g')
+
+        for extension in $extensionslist; do
+            # Send Request
+            requestRun
+
+            # Show Information
+            if [[ -n "$requestStorage" ]]; then
+                str="Extension: ${cBold}${extension}${cNormal}" 
+                n=${#str}
+                ((n += 1))
+                chr="="
+                echo -e "$(printf "%0.s${chr}" $(seq ${n}))"
+                echo -e "${str}"
+                showConentInFile
+                echo -e "$(printf "%0.s${chr}" $(seq ${n}))"
+                echo "$requestStorage"
+
+                # Output file
+                if [[ -n "$outputFile" ]]; then
+                    outputFile "$requestStorage" "$outputFile"
+                fi
+            else
+                notFound
+            fi
+        done
+
+        # Close script
+        exit 1
+    else
+        # Send Request
+        requestRun
+    
+        # Show information
+        if [[  -n "$requestStorage" ]]; then
+            str=echo -e "Extension: ${cBold}${extension}${cNormal}"
+            n=${#str}
+            ((n += 1))
+            chr="="
+            echo -e "$(printf "%0.s${chr}" $(seq ${n}))"
+            echo -e "${str}"
+            showConentInFile
+            echo -e "$(printf "%0.s${chr}" $(seq ${n}))"
+            echo "$requestStorage"
+
+            # Output file
+            if [[ -n "$outputFile" ]]; then
+                outputFile "$requestStorage" "$outputFile"
+            fi
+        else
+            notFound
+        fi
+    fi
+}
+
+## StealthSearch Subdomains Attack
+function subdomainAttack() {
+    echo -e "\nTarget: ${cBold}${target}${cNormal}"
+
+    # Send request
+    requestRun
+
+    # Show information
+    if [[ -n "$requestStorage" ]]; then
+        str="Subdomains Found:"
+        n=${#str}
+        ((n += 1))
+        chr="="
+        echo -e "$(printf "%0.s${chr}" $(seq ${n}))"
+        echo -e "${str}"
         echo -e "$(printf "%0.s${chr}" $(seq ${n}))"
         echo "$requestStorage" | sort -u
 
@@ -306,6 +434,37 @@ function dictionaryAttack() {
 }
 
 
+## StealthSearch Contents Attack
+function contentsAttack() {
+    echo -e "\nTarget: ${bold}${target}${cNormal}"
+
+    # Send Request
+    requestRun
+
+    # Show information
+    if [[ -n "$requestStorage" ]]; then
+        str="Files found containing: ${contents}"
+        n=${#str}
+        ((n += 1))
+        chr="="
+        echo -e "$(printf "%0.s${chr}" $(seq ${n}))"
+        echo -e "${str}"
+        echo -e "$(printf "%0.s${chr}" $(seq ${n}))"
+        echo "$requestStorage" | sort -u
+
+        # Output file
+        if [[ -n "$outputFile" ]]; then
+            outputFile "$requestStorage" "$outputFile"
+        fi
+    else
+        notFound
+    fi
+        
+}
+
+function outputFile() {
+    echo "$requestStorage" >> $outputFile
+}
 
 # Script Execute
 
